@@ -11,7 +11,7 @@
   </head>
   <body>
     <a-scene 
-      mindar-image="imageTargetSrc: ./aley2/targets.mind;" 
+      mindar-image="imageTargetSrc: ./aley2/targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -25,13 +25,23 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
+        
+        <a-plane 
+          color="#FFD700" 
+          width="1.05" 
+          height="0.6125" 
+          position="0 -0.15 0.01" 
+          rotation="0 0 0">
+        </a-plane>
+
         <a-video 
           src="#fetihVideo" 
           width="1" 
           height="0.5625" 
-          position="0 -0.10 0.01" 
+          position="0 -0.15 0.02" 
           rotation="0 0 0">
         </a-video>
+
       </a-entity>
     </a-scene>
 
