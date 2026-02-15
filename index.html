@@ -19,7 +19,7 @@
       
       <a-assets>
         <img id="card" src="./aley/fetih.jpg" />
-        <video id="fetihVideo" src="./aley/video.mp4" preload="auto" loop="true" playsinline webkit-playsinline></video>
+        <video id="fetihVideo" src="./aley/video2 (1).mp4" preload="auto" loop="true" playsinline webkit-playsinline></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -29,16 +29,14 @@
           src="#fetihVideo" 
           width="1" 
           height="0.5625" 
-          position="0 0 0" 
+          position="0 0 0.01" 
           rotation="0 0 0">
         </a-video>
       </a-entity>
     </a-scene>
 
     <script>
-      // Video oynatma mantığı: Resim algılandığında oynat, kaybolduğunda durdur.
       const video = document.querySelector('#fetihVideo');
-      const sceneEl = document.querySelector('a-scene');
       const targetEl = document.querySelector('[mindar-image-target]');
 
       targetEl.addEventListener("targetFound", event => {
