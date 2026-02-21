@@ -7,24 +7,40 @@
     
     <style>
       body { margin: 0; overflow: hidden; }
-      /* iOS'ta videonun yüklenmesi için ekrana bir kez dokunulması gerekebilir, 
-         bu yüzden kullanıcıyı yönlendiren küçük bir ipucu eklenebilir. */
+      /* Kullanıcıya dokunması gerektiğini hatırlatan opsiyonel bir bilgi mesajı */
+      #ui-overlay {
+        position: fixed; top: 10px; left: 10px; z-index: 1000;
+        color: gold; font-family: sans-serif; background: rgba(0,0,0,0.5);
+        padding: 5px 10px; border-radius: 5px; pointer-events: none;
+      }
     </style>
   </head>
   <body>
+    <div id="ui-overlay">Sesi aktif etmek için ekrana bir kez dokunun.</div>
+
     <a-scene 
       mindar-image="imageTargetSrc: ./aley2/targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: true"> <a-assets>
+      device-orientation-permission-ui="enabled: true">
+      
+      <a-assets>
         <img id="card" src="./aley2/fetih.jpg" />
         <video id="fetihVideo" src="./aley2/video2 (1).mp4" preload="auto" loop="true" playsinline webkit-playsinline muted></video>
         
         <img id="aestheticGoldTexture" src="https://cdn.pixabay.com/photo/2021/08/22/16/08/gold-6565557_1280.jpg" crossorigin="anonymous">
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-text
+          value="v1.1"
+          color="#FFD700"
+          align="right"
+          position="0.6 0.35 -1"
+          scale="0.5 0.5 0.5">
+        </a-text>
+      </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         
@@ -51,16 +67,26 @@
     <script>
       const video = document.querySelector('#fetihVideo');
       const targetEl = document.querySelector('[mindar-image-target]');
+      const uiOverlay = document.querySelector('#ui-overlay');
 
-      // iOS KRİTİK: Kullanıcı ekrana dokunduğu an videoyu "load" ediyoruz.
-      // Bu işlem yapılmazsa video siyah kalır.
-      window.addEventListener('click', () => {
-          video.load();
-          console.log("iOS Video tetiklendi");
-      }, {once: true}); // Sadece ilk dokunuşta çalışır
+      // iOS SES KİLİDİNİ AÇMA MANTIĞI
+      const unlockAudio = () => {
+          video.muted = false; // Sessizliği kaldır
+          video.play().then(() => {
+              video.pause(); // Sesi açtık, şimdi target bulunana kadar durdur
+              uiOverlay.style.display = 'none'; // Uyarıyı kaldır
+          }).catch(e => console.log("Ses açma hatası:", e));
+          
+          window.removeEventListener('click', unlockAudio);
+          window.removeEventListener('touchstart', unlockAudio);
+      };
 
+      window.addEventListener('click', unlockAudio);
+      window.addEventListener('touchstart', unlockAudio);
+
+      // Target Bulunma/Kaybolma Dinleyicileri
       targetEl.addEventListener("targetFound", event => {
-        console.log("Resim bulundu, video başlıyor...");
+        console.log("Resim bulundu, video sesli başlıyor...");
         video.play();
       });
 
